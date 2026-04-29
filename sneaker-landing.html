@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOLE KINGS — Premium Sneaker Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --orange: #FF4D00;
+    --black: #0A0A0A;
+    --white: #F5F3EE;
+    --gray: #B8B5AE;
+    --card-bg: #131313;
+    --accent-2: #1A1A1A;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  .cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--orange);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.3s, height 0.3s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(255,77,0,0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease-out, width 0.3s, height 0.3s;
+  }
+  .cursor.hovering { width: 6px; height: 6px; }
+  .cursor-ring.hovering { width: 60px; height: 60px; border-color: var(--orange); }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 28px 60px;
+    backdrop-filter: blur(10px);
+    background: rgba(10,10,10,0.6);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    animation: fadeDown 1s ease forwards;
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 4px;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .logo span { color: var(--orange); }
+
+  .nav-links { display: flex; gap: 40px; list-style: none; }
+  .nav-links a {
+    text-decoration: none; color: var(--gray);
+    font-size: 13px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase;
+    transition: color 0.3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom: -4px; left: 0;
+    width: 0; height: 1px; background: var(--orange);
+    transition: width 0.3s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { width: 100%; }
+
+  .nav-right { display: flex; align-items: center; gap: 24px; }
+  .cart-btn {
+    background: var(--orange);
+    color: var(--white);
+    border: none;
+    padding: 10px 24px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    cursor: none;
+    transition: background 0.3s, transform 0.2s;
+  }
+  .cart-btn:hover { background: #ff6a2b; transform: scale(1.03); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding-top: 100px;
+  }
+
+  .hero-bg-text {
+    position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(120px, 18vw, 260px);
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.04);
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+    pointer-events: none;
+    animation: driftBg 20s linear infinite;
+    user-select: none;
+  }
+
+  @keyframes driftBg {
+    0% { transform: translate(-50%, -50%) translateX(0); }
+    50% { transform: translate(-50%, -50%) translateX(-30px); }
+    100% { transform: translate(-50%, -50%) translateX(0); }
+  }
+
+  .hero-left {
+    padding: 0 60px 0 80px;
+    z-index: 2;
+    animation: slideRight 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+  }
+
+  @keyframes slideRight {
+    from { opacity: 0; transform: translateX(-60px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,77,0,0.12);
+    border: 1px solid rgba(255,77,0,0.3);
+    padding: 6px 16px;
+    font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 32px;
+  }
+  .badge-dot { width: 6px; height: 6px; background: var(--orange); border-radius: 50%; animation: blink 1.5s infinite; }
+  @keyframes blink { 0%,100%{ opacity:1; } 50%{ opacity:0.2; } }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 8vw, 110px);
+    line-height: 0.92;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+  .hero-title .line-orange { color: var(--orange); display: block; }
+  .hero-title .line-white { display: block; }
+
+  .hero-subtitle {
+    font-size: 15px; color: var(--gray); font-weight: 300; line-height: 1.7;
+    max-width: 360px; margin: 24px 0 40px;
+    letter-spacing: 0.3px;
+  }
+
+  .hero-actions { display: flex; align-items: center; gap: 24px; margin-bottom: 60px; }
+
+  .btn-primary {
+    background: var(--orange); color: var(--white);
+    padding: 16px 40px; border: none;
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+    cursor: none; transition: all 0.3s;
+    position: relative; overflow: hidden;
+  }
+  .btn-primary::before {
+    content: ''; position: absolute; inset: 0;
+    background: rgba(255,255,255,0.15);
+    transform: translateX(-100%) skewX(-20deg);
+    transition: transform 0.4s;
+  }
+  .btn-primary:hover::before { transform: translateX(110%) skewX(-20deg); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(255,77,0,0.35); }
+
+  .btn-ghost {
+    background: transparent; color: var(--white);
+    padding: 15px 36px; border: 1px solid rgba(255,255,255,0.2);
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+    cursor: none; transition: all 0.3s;
+  }
+  .btn-ghost:hover { border-color: var(--white); background: rgba(255,255,255,0.05); }
+
+  .hero-stats { display: flex; gap: 40px; }
+  .stat-item {}
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px; color: var(--white);
+    line-height: 1;
+  }
+  .stat-num span { color: var(--orange); }
+  .stat-label { font-size: 11px; color: var(--gray); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
+
+  .hero-right {
+    position: relative; display: flex; align-items: center; justify-content: center;
+    height: 100vh;
+    z-index: 2;
+    animation: slideLeft 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+  }
+
+  @keyframes slideLeft {
+    from { opacity: 0; transform: translateX(60px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .shoe-circle {
+    position: absolute;
+    width: min(520px, 85vw); height: min(520px, 85vw);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,77,0,0.08) 0%, transparent 70%);
+    border: 1px solid rgba(255,77,0,0.08);
+    animation: pulse-ring 4s ease-in-out infinite;
+  }
+  .shoe-circle-2 {
+    width: min(380px, 65vw); height: min(380px, 65vw);
+    background: radial-gradient(circle, rgba(255,77,0,0.06) 0%, transparent 70%);
+    border: 1px solid rgba(255,77,0,0.12);
+    animation: pulse-ring 4s ease-in-out infinite 1s;
+  }
+
+  @keyframes pulse-ring {
+    0%,100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.04); opacity: 0.7; }
+  }
+
+  .main-shoe {
+    position: relative; z-index: 3;
+    width: min(580px, 90vw);
+    filter: drop-shadow(0 30px 80px rgba(255,77,0,0.25)) drop-shadow(0 0 40px rgba(0,0,0,0.8));
+    animation: float 6s ease-in-out infinite;
+    transform-origin: center;
+  }
+
+  @keyframes float {
+    0%,100% { transform: translateY(0) rotate(-8deg); }
+    50% { transform: translateY(-18px) rotate(-6deg); }
+  }
+
+  .shoe-tag {
+    position: absolute;
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 10px;
+    animation: float 6s ease-in-out infinite;
+  }
+  .shoe-tag-1 { top: 28%; right: 6%; animation-delay: 1s; }
+  .shoe-tag-2 { bottom: 26%; left: 4%; animation-delay: 2.5s; }
+
+  .shoe-tag-icon {
+    width: 32px; height: 32px;
+    background: rgba(255,77,0,0.15);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .shoe-tag-text { }
+  .shoe-tag-text strong { display: block; font-size: 13px; font-weight: 700; color: var(--white); }
+  .shoe-tag-text span { font-size: 11px; color: var(--gray); letter-spacing: 1px; }
+
+  .divider-line {
+    width: 100%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,77,0,0.4), transparent);
+    margin: 0;
+  }
+
+  /* TICKER */
+  .ticker-wrap {
+    background: var(--orange);
+    overflow: hidden; white-space: nowrap;
+    padding: 14px 0;
+  }
+  .ticker-inner {
+    display: inline-flex; gap: 0;
+    animation: ticker 22s linear infinite;
+  }
+  .ticker-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 17px; letter-spacing: 3px;
+    padding: 0 40px;
+    color: var(--black);
+    display: inline-flex; align-items: center; gap: 16px;
+  }
+  .ticker-dot { width: 5px; height: 5px; background: var(--black); border-radius: 50%; opacity: 0.4; }
+
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* FEATURED */
+  .section { padding: 120px 80px; }
+  .section-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 60px;
+  }
+  .section-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 3px;
+    color: var(--orange); text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(44px, 5vw, 72px);
+    letter-spacing: 2px; line-height: 0.95;
+  }
+  .see-all {
+    font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--gray); text-decoration: none;
+    display: flex; align-items: center; gap: 8px;
+    transition: color 0.3s;
+    cursor: none;
+  }
+  .see-all:hover { color: var(--orange); }
+  .see-all-arrow {
+    width: 28px; height: 1px; background: currentColor;
+    position: relative; transition: width 0.3s;
+  }
+  .see-all:hover .see-all-arrow { width: 40px; }
+  .see-all-arrow::after {
+    content: ''; position: absolute; right: 0; top: -3px;
+    width: 6px; height: 6px;
+    border-top: 1px solid currentColor;
+    border-right: 1px solid currentColor;
+    transform: rotate(45deg);
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .product-card {
+    background: var(--card-bg);
+    padding: 40px 36px;
+    position: relative; overflow: hidden;
+    cursor: none;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    group: true;
+  }
+  .product-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,77,0,0.05), transparent);
+    opacity: 0; transition: opacity 0.4s;
+  }
+  .product-card:hover::before { opacity: 1; }
+  .product-card:hover { transform: translateY(-4px); z-index: 2; }
+
+  .product-card.featured {
+    grid-row: span 2;
+    background: rgba(255,77,0,0.08);
+    border: 1px solid rgba(255,77,0,0.15);
+  }
+
+  .card-badge {
+    display: inline-block;
+    font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    padding: 4px 10px;
+    margin-bottom: 32px;
+  }
+  .badge-new { background: var(--orange); color: var(--black); }
+  .badge-limited { background: transparent; border: 1px solid var(--orange); color: var(--orange); }
+  .badge-sold { background: transparent; border: 1px solid var(--gray); color: var(--gray); }
+
+  .product-img-wrap {
+    display: flex; justify-content: center; align-items: center;
+    margin-bottom: 32px;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .product-card:hover .product-img-wrap { transform: scale(1.05) translateY(-6px); }
+
+  .product-img-wrap img {
+    width: 100%; max-width: 280px; height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6));
+  }
+
+  .shoe-placeholder {
+    width: 260px; height: 160px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 100px;
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6));
+  }
+
+  .product-brand {
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--gray); margin-bottom: 8px;
+  }
+  .product-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px; letter-spacing: 1px;
+    color: var(--white); line-height: 1;
+    margin-bottom: 4px;
+  }
+  .product-sub { font-size: 13px; color: var(--gray); font-weight: 300; margin-bottom: 24px; }
+
+  .product-footer {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .product-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px; color: var(--white);
+  }
+  .product-price .currency { font-size: 16px; vertical-align: super; }
+
+  .add-btn {
+    width: 44px; height: 44px;
+    background: var(--orange); border: none;
+    display: flex; align-items: center; justify-content: center;
+    cursor: none; font-size: 20px; color: var(--black); font-weight: 700;
+    transition: all 0.3s; flex-shrink: 0;
+  }
+  .add-btn:hover { background: var(--white); transform: scale(1.1) rotate(90deg); }
+
+  .product-rating {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 12px; color: var(--gray);
+    margin-bottom: 20px;
+  }
+  .stars { color: var(--orange); letter-spacing: 1px; }
+
+  /* COLOR SWATCHES */
+  .color-swatches {
+    display: flex; gap: 8px; margin-bottom: 20px;
+  }
+  .swatch {
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 2px solid transparent;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: none;
+  }
+  .swatch:hover, .swatch.active { border-color: var(--white); transform: scale(1.2); }
+
+  /* CATEGORY SECTION */
+  .categories-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+
+  .cat-card {
+    position: relative; overflow: hidden;
+    height: 320px; cursor: none;
+    display: flex; align-items: flex-end; padding: 36px;
+    background: var(--card-bg);
+  }
+  .cat-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%);
+    z-index: 1;
+  }
+  .cat-card-bg {
+    position: absolute; inset: 0;
+    font-size: 160px; display: flex; align-items: center; justify-content: center;
+    opacity: 0.08; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s;
+  }
+  .cat-card:hover .cat-card-bg { transform: scale(1.08); opacity: 0.14; }
+  .cat-content { position: relative; z-index: 2; }
+  .cat-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px; letter-spacing: 2px; line-height: 1;
+    margin-bottom: 8px;
+  }
+  .cat-subtitle { font-size: 13px; color: var(--gray); font-weight: 300; margin-bottom: 20px; }
+  .cat-link {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--orange); text-decoration: none;
+    border-bottom: 1px solid rgba(255,77,0,0.4);
+    padding-bottom: 4px; cursor: none;
+  }
+
+  /* MARQUEE BRANDS */
+  .brands-section {
+    padding: 80px;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .brands-label {
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    color: rgba(255,255,255,0.2); text-align: center; margin-bottom: 48px;
+  }
+  .brands-row { display: flex; align-items: center; justify-content: space-between; gap: 60px; }
+  .brand-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(18px, 2.5vw, 28px); letter-spacing: 4px;
+    color: rgba(255,255,255,0.12);
+    transition: color 0.3s;
+    cursor: none; white-space: nowrap;
+  }
+  .brand-item:hover { color: var(--white); }
+
+  /* NEWSLETTER */
+  .newsletter-section {
+    padding: 100px 80px;
+    background: var(--card-bg);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+  }
+  .nl-label { font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--orange); margin-bottom: 16px; }
+  .nl-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 4vw, 64px);
+    letter-spacing: 2px; line-height: 0.95;
+  }
+  .nl-sub { font-size: 15px; color: var(--gray); font-weight: 300; line-height: 1.7; margin-top: 20px; }
+  .nl-form { display: flex; gap: 0; margin-top: 40px; }
+  .nl-input {
+    flex: 1; background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 16px 24px;
+    color: var(--white); font-family: 'Barlow', sans-serif; font-size: 14px;
+    outline: none; transition: border-color 0.3s;
+  }
+  .nl-input::placeholder { color: rgba(255,255,255,0.25); }
+  .nl-input:focus { border-color: var(--orange); }
+  .nl-submit {
+    background: var(--orange); color: var(--black);
+    padding: 16px 28px; border: none;
+    font-family: 'Barlow', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    cursor: none; transition: all 0.3s; white-space: nowrap;
+  }
+  .nl-submit:hover { background: var(--white); }
+
+  .nl-right { position: relative; }
+  .nl-shoe-wrap {
+    font-size: 140px; text-align: center;
+    animation: float 6s ease-in-out infinite;
+    filter: drop-shadow(0 30px 60px rgba(255,77,0,0.2));
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 60px 80px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 4px; }
+  .footer-logo span { color: var(--orange); }
+  .footer-links { display: flex; gap: 32px; }
+  .footer-links a { font-size: 12px; color: var(--gray); text-decoration: none; letter-spacing: 1px; transition: color 0.3s; cursor: none; }
+  .footer-links a:hover { color: var(--white); }
+  .footer-copy { font-size: 12px; color: rgba(255,255,255,0.2); letter-spacing: 1px; }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* SCROLL PROGRESS */
+  .progress-bar {
+    position: fixed; top: 0; left: 0;
+    height: 2px; background: var(--orange);
+    z-index: 200; width: 0%;
+    transition: width 0.1s;
+  }
+
+  @media (max-width: 960px) {
+    nav { padding: 20px 30px; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; padding-top: 80px; }
+    .hero-right { height: 50vw; }
+    .hero-left { padding: 0 30px; }
+    .section { padding: 80px 30px; }
+    .products-grid { grid-template-columns: 1fr; }
+    .product-card.featured { grid-row: span 1; }
+    .categories-grid { grid-template-columns: 1fr; }
+    .newsletter-section { grid-template-columns: 1fr; padding: 60px 30px; }
+    .brands-row { flex-wrap: wrap; gap: 30px; }
+    footer { flex-direction: column; gap: 24px; padding: 40px 30px; text-align: center; }
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+    .brands-section { padding: 40px 30px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="progress-bar" id="progressBar"></div>
+
+<nav>
+  <a href="#" class="logo">SOLE<span>KINGS</span></a>
+  <ul class="nav-links">
+    <li><a href="#">New Drops</a></li>
+    <li><a href="#">Men</a></li>
+    <li><a href="#">Women</a></li>
+    <li><a href="#">Collabs</a></li>
+    <li><a href="#">Sale</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="cart-btn">Cart (0)</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg-text">AIR MAX</div>
+
+  <div class="hero-left">
+    <div class="hero-badge">
+      <div class="badge-dot"></div>
+      New Drop 2025
+    </div>
+
+    <h1 class="hero-title">
+      <span class="line-white">NIKE AIR</span>
+      <span class="line-orange">JORDAN</span>
+      <span class="line-white">LEBAGH</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      Celebrating the iconic classic in original form — genuine premium leather takes over the upper while a smooth swoosh accents every detail.
+    </p>
+
+    <div class="hero-actions">
+      <button class="btn-primary">Shop Now</button>
+      <button class="btn-ghost">View Lookbook</button>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">12<span>K+</span></div>
+        <div class="stat-label">Happy Customers</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">480<span>+</span></div>
+        <div class="stat-label">Sneaker Models</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">50<span>+</span></div>
+        <div class="stat-label">Top Brands</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="shoe-circle"></div>
+    <div class="shoe-circle shoe-circle-2"></div>
+
+    <div style="font-size: clamp(200px, 40vw, 420px); line-height:1; filter: drop-shadow(0 40px 100px rgba(255,77,0,0.3)) drop-shadow(0 0 60px rgba(0,0,0,0.9)); animation: float 6s ease-in-out infinite;" class="main-shoe">👟</div>
+
+    <div class="shoe-tag shoe-tag-1">
+      <div class="shoe-tag-icon">⚡</div>
+      <div class="shoe-tag-text">
+        <strong>Air Cushion</strong>
+        <span>TECHNOLOGY</span>
+      </div>
+    </div>
+
+    <div class="shoe-tag shoe-tag-2">
+      <div class="shoe-tag-icon">🏆</div>
+      <div class="shoe-tag-text">
+        <strong>Limited Edition</strong>
+        <span>ONLY 200 PAIRS</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider-line"></div>
+
+<div class="ticker-wrap">
+  <div class="ticker-inner">
+    <span class="ticker-item">NEW ARRIVALS <span class="ticker-dot"></span></span>
+    <span class="ticker-item">EXCLUSIVE DROPS <span class="ticker-dot"></span></span>
+    <span class="ticker-item">FREE SHIPPING OVER ฿2,000 <span class="ticker-dot"></span></span>
+    <span class="ticker-item">LIMITED COLLABS <span class="ticker-dot"></span></span>
+    <span class="ticker-item">AIR JORDAN COLLECTION <span class="ticker-dot"></span></span>
+    <span class="ticker-item">YEEZY RESTOCK <span class="ticker-dot"></span></span>
+    <span class="ticker-item">NEW ARRIVALS <span class="ticker-dot"></span></span>
+    <span class="ticker-item">EXCLUSIVE DROPS <span class="ticker-dot"></span></span>
+    <span class="ticker-item">FREE SHIPPING OVER ฿2,000 <span class="ticker-dot"></span></span>
+    <span class="ticker-item">LIMITED COLLABS <span class="ticker-dot"></span></span>
+    <span class="ticker-item">AIR JORDAN COLLECTION <span class="ticker-dot"></span></span>
+    <span class="ticker-item">YEEZY RESTOCK <span class="ticker-dot"></span></span>
+  </div>
+</div>
+
+<section class="section">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-label">Featured This Week</div>
+      <h2 class="section-title">HOT<br>DROPS</h2>
+    </div>
+    <a href="#" class="see-all">Browse All <span class="see-all-arrow"></span></a>
+  </div>
+
+  <div class="products-grid">
+
+    <div class="product-card featured reveal">
+      <span class="card-badge badge-new">New</span>
+      <div class="product-img-wrap">
+        <div class="shoe-placeholder">👟</div>
+      </div>
+      <div class="product-brand">Nike</div>
+      <div class="product-name">Air Jordan 1<br>Retro High OG</div>
+      <div class="product-sub">Chicago Colourway — 2025</div>
+      <div class="color-swatches">
+        <div class="swatch active" style="background:#E41C23;"></div>
+        <div class="swatch" style="background:#F5F3EE;"></div>
+        <div class="swatch" style="background:#0A0A0A; border:1px solid rgba(255,255,255,0.2);"></div>
+        <div class="swatch" style="background:#FF4D00;"></div>
+      </div>
+      <div class="product-rating">
+        <span class="stars">★★★★★</span>
+        <span>(243 reviews)</span>
+      </div>
+      <div class="product-footer">
+        <div class="product-price"><span class="currency">฿</span>8,900</div>
+        <button class="add-btn">+</button>
+      </div>
+    </div>
+
+    <div class="product-card reveal reveal-delay-1">
+      <span class="card-badge badge-limited">Limited</span>
+      <div class="product-img-wrap">
+        <div class="shoe-placeholder" style="font-size:80px;">🥾</div>
+      </div>
+      <div class="product-brand">Adidas</div>
+      <div class="product-name">Yeezy 350 V2</div>
+      <div class="product-sub">Beluga — Restock</div>
+      <div class="color-swatches">
+        <div class="swatch active" style="background:#888;"></div>
+        <div class="swatch" style="background:#FF4D00;"></div>
+      </div>
+      <div class="product-footer">
+        <div class="product-price"><span class="currency">฿</span>6,200</div>
+        <button class="add-btn">+</button>
+      </div>
+    </div>
+
+    <div class="product-card reveal reveal-delay-2">
+      <span class="card-badge badge-new">New</span>
+      <div class="product-img-wrap">
+        <div class="shoe-placeholder" style="font-size:80px;">👟</div>
+      </div>
+      <div class="product-brand">New Balance</div>
+      <div class="product-name">550 White Green</div>
+      <div class="product-sub">Heritage Running</div>
+      <div class="color-swatches">
+        <div class="swatch active" style="background:#F5F3EE; border:1px solid rgba(255,255,255,0.2);"></div>
+        <div class="swatch" style="background:#2D6A4F;"></div>
+        <div class="swatch" style="background:#1B4FFF;"></div>
+      </div>
+      <div class="product-footer">
+        <div class="product-price"><span class="currency">฿</span>4,500</div>
+        <button class="add-btn">+</button>
+      </div>
+    </div>
+
+    <div class="product-card reveal reveal-delay-3">
+      <span class="card-badge badge-limited">Collab</span>
+      <div class="product-img-wrap">
+        <div class="shoe-placeholder" style="font-size:80px;">🥿</div>
+      </div>
+      <div class="product-brand">Nike × Off-White</div>
+      <div class="product-name">Air Force 1 Low</div>
+      <div class="product-sub">The Ten Collection</div>
+      <div class="product-footer">
+        <div class="product-price"><span class="currency">฿</span>12,400</div>
+        <button class="add-btn">+</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section style="padding: 0 80px 120px; display:grid; grid-template-columns:1fr 1fr; gap:2px;" class="reveal">
+  <div class="cat-card">
+    <div class="cat-card-bg">🏃</div>
+    <div class="cat-content">
+      <div class="cat-title">RUNNING</div>
+      <div class="cat-subtitle">Performance meets street style</div>
+      <a href="#" class="cat-link">Shop Collection →</a>
+    </div>
+  </div>
+  <div class="cat-card">
+    <div class="cat-card-bg">🏀</div>
+    <div class="cat-content">
+      <div class="cat-title">BASKETBALL</div>
+      <div class="cat-subtitle">Court-ready, street-approved</div>
+      <a href="#" class="cat-link">Shop Collection →</a>
+    </div>
+  </div>
+</section>
+
+<div class="brands-section reveal">
+  <div class="brands-label">Authorized Retailers For</div>
+  <div class="brands-row">
+    <div class="brand-item">NIKE</div>
+    <div class="brand-item">ADIDAS</div>
+    <div class="brand-item">JORDAN</div>
+    <div class="brand-item">NEW BALANCE</div>
+    <div class="brand-item">CONVERSE</div>
+    <div class="brand-item">VANS</div>
+    <div class="brand-item">PUMA</div>
+    <div class="brand-item">REEBOK</div>
+  </div>
+</div>
+
+<section class="newsletter-section reveal">
+  <div>
+    <div class="nl-label">Join The Community</div>
+    <h2 class="nl-title">DON'T MISS<br>A SINGLE<br>DROP</h2>
+    <p class="nl-sub">Get early access to limited releases, exclusive discounts, and style guides — straight to your inbox.</p>
+    <div class="nl-form">
+      <input type="email" class="nl-input" placeholder="your@email.com">
+      <button class="nl-submit">Subscribe</button>
+    </div>
+  </div>
+  <div class="nl-right">
+    <div class="nl-shoe-wrap">👟</div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">SOLE<span>KINGS</span></div>
+  <div class="footer-links">
+    <a href="#">About</a>
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Shipping</a>
+    <a href="#">Returns</a>
+    <a href="#">Contact</a>
+  </div>
+  <div class="footer-copy">© 2025 SOLE KINGS. ALL RIGHTS RESERVED.</div>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const cursorRing = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    cursorRing.style.left = rx + 'px';
+    cursorRing.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  document.querySelectorAll('a, button, .product-card, .cat-card, .swatch, .brand-item').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.classList.add('hovering'); cursorRing.classList.add('hovering'); });
+    el.addEventListener('mouseleave', () => { cursor.classList.remove('hovering'); cursorRing.classList.remove('hovering'); });
+  });
+
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (window.scrollY / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progressBar').style.width = pct + '%';
+  });
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  document.querySelectorAll('.swatch').forEach(sw => {
+    sw.addEventListener('click', () => {
+      sw.closest('.color-swatches').querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+      sw.classList.add('active');
+    });
+  });
+
+  document.querySelector('.nl-submit').addEventListener('click', () => {
+    const inp = document.querySelector('.nl-input');
+    if (inp.value) {
+      inp.value = '';
+      inp.placeholder = '✓ Subscribed! Welcome to the family.';
+      setTimeout(() => { inp.placeholder = 'your@email.com'; }, 3000);
+    }
+  });
+</script>
+</body>
+</html>
